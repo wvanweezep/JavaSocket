@@ -1,9 +1,6 @@
 package commons;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +17,20 @@ public abstract class Database<T extends Entity> {
 
     private List<T> load() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
-            return (ArrayList<T>) ois.readObject();
+            ArrayList<T> objects = (ArrayList<T>) ois.readObject();
+            if (objects == null) {
+                return new ArrayList<>();
+            }
+            return objects;
         } catch (FileNotFoundException e) {
+            try {
+                new File(filePath).createNewFile();
+            } catch (IOException ioException) {
+                System.out.println("Error creating the file: " + ioException.getMessage());
+            }
             return new ArrayList<>();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -44,6 +49,7 @@ public abstract class Database<T extends Entity> {
         else data.stream()
                 .filter(entity -> entity.equals(obj))
                 .forEach(entity -> { data.set(data.indexOf(entity), obj); });
+        write();
         return data;
     }
 
@@ -54,5 +60,14 @@ public abstract class Database<T extends Entity> {
 
     public void clear(){
         data.clear();
+    }
+
+    public void write() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
+            oos.writeObject(data);
+            System.out.println("Data saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving data: " + e.getMessage());
+        }
     }
 }

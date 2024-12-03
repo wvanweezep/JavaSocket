@@ -1,8 +1,13 @@
 package commons;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Entity {
+public abstract class Entity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
     private long id;
 
     public long getId() { return id; }

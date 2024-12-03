@@ -1,5 +1,7 @@
 package server;
 
+import server.database.UserDatabase;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -11,6 +13,7 @@ public class Server {
 
     private ServerSocket serverSocket;
     private final List<ClientHandler> clients = new ArrayList<>();
+    private final UserDatabase users = new UserDatabase();
 
     /**
      * Starting protocol of the {@code Server}, opening up for any clients to connect.
