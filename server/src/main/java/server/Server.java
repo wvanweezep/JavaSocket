@@ -37,6 +37,12 @@ public class Server {
         }
     }
 
+    public void broadcast(String msg, List<ClientHandler> receivers) {
+        for (ClientHandler client : clients.stream().filter(receivers::contains).toList()) {
+            client.sendMessage(msg);
+        }
+    }
+
     public void removeClient(ClientHandler clientHandler) {
         clients.remove(clientHandler);
     }
