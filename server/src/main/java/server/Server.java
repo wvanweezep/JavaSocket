@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -12,7 +13,9 @@ public class Server {
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        log("Server started on port " + port);
+        log("Server started: (port = " + port +
+                ", ip = " + InetAddress.getLocalHost().getHostAddress()
+                + ")");
 
         while (true) {
             Socket clientSocket = serverSocket.accept();
