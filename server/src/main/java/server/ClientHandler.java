@@ -39,12 +39,13 @@ public class ClientHandler implements Runnable {
 
     private void userSetUp() throws IOException {
         String msg;
-        User newUser = new User(null, null);
+        String username = null;
+        String password = null;
         while ((msg = in.readLine()) != null) {
-            if (newUser.getUsername() == null) { newUser.setUsername(msg); }
-            else if (newUser.getPassword() == null) {
-                newUser.setPassword(msg);
-                user = newUser;
+            if (username == null) { username = msg; }
+            else if (password == null) {
+                password = msg;
+                user = new User(username, password);
                 sendMessage("Successfully created account");
                 break;
             }
