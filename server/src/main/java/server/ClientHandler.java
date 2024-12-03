@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
     private void close() {
         try {
             socket.close();
-            server.removeClient(this);
+            if (!server.removeClient(this)) throw new IOException("Client not found");
         } catch(IOException e) {
             System.err.println("Error closing client connection: " + e.getMessage());
         }
