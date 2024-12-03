@@ -72,7 +72,7 @@
         <!-- JAVADOC CONVENTIONS -->
         <module name="MissingJavadocMethod">
             <property name="allowMissingPropertyJavadoc" value="true"/>
-            <property name="allowedAnnotations" value="client.Main"/>
+            <property name="ignoreMethodNamesRegex" value="^main$"/>
         </module>
         <module name="JavadocMethod">
             <property name="allowMissingParamTags" value="false"/>
@@ -86,7 +86,6 @@
             <property name="severity" value="error"/>
         </module>
         <module name="DeclarationOrder"/>
-        <module name="MagicNumber"/>
         <module name="NestedForDepth"/>
         <module name="UnusedLocalVariable"/>
     </module>
