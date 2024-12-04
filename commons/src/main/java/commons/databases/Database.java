@@ -17,37 +17,30 @@ public abstract class Database<T extends Entity> {
      * An {@code ArrayList} containing all saved entities.
      */
     private final List<T> data;
-    /**
-     * The type of {@code Entity} in the database.
-     */
-    private final Class<T> type;
 
     /**
      * Constructor initializing the data array.
-     *
-     * @param type The type for the {@code Entity}
      */
-    public Database(Class<T> type) {
-        this.data = load();
-        this.type = type;
+    public Database() {
+        this.data = load("");
+    }
+
+    /**
+     * Constructor initializing the data array on a certain path.
+     * @param path The path of the database file
+     */
+    public Database(String path) {
+        this.data = load(path);
     }
 
     /**
      * Placeholder load method returning an empty {@code ArrayList}.
      *
+     * @param path The path to find the .ser file ({@code PersistentDatabase})
      * @return An empty {@code ArrayList}
      */
-    protected List<T> load() {
+    protected List<T> load(String path) {
         return new ArrayList<>();
-    }
-
-    /**
-     * Getter for the database {@code Entity} type.
-     *
-     * @return The type of the {@code Entity} in the database
-     */
-    public Class<T> getType(){
-        return type;
     }
 
     /**
@@ -131,7 +124,7 @@ public abstract class Database<T extends Entity> {
      * @param <T> The type for the message, any object is allowed
      */
     protected <T> T log(T msg){
-        System.out.println("[Database:" + getType() + "] " + msg.toString());
+        System.out.println("[" + getClass().getSimpleName() + "] " + msg.toString());
         return msg;
     }
 }
