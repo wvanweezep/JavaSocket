@@ -39,6 +39,10 @@ public class Server {
         return identity;
     }
 
+    public List<ClientHandler> getClients() {
+        return clients;
+    }
+
     /**
      * Getter for the user database
      *

@@ -43,8 +43,8 @@ public class Client {
             try {
                 Message<String> obj = (Message<String>) in.readObject();
                 if (obj.getObject().isPresent()) {
-                    validated = !obj.getObject().get().equals(
-                            "Incorrect username/password combination");
+                    validated = obj.getObject().get().equals(
+                            "Successfully logged in");
                     System.out.println("[" + obj.getSender().getUsername() + "] "
                             + (obj.getObject().isPresent() ? obj.getObject().get() : null) + "\n");
                 }

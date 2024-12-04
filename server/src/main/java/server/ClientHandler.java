@@ -42,11 +42,19 @@ public class ClientHandler implements Runnable {
                 Message<User> obj = (Message<User>) in.readObject();
                 user = obj.getObject().orElse(null);
                 if (server.getUsersDatabase().authenticateUser(user)) {
-                    sendMessage("Successfully logged in", server.getIdentity());
-                    return;
+                    log(server.getClients());
+                    if (server.getClients().stream() //
+                            .filter(c -> !c.equals(this))
+                            .map(ClientHandler::getUser) //
+                            .anyMatch(user::equals)) {
+                        sendMessage("User already connected", server.getIdentity());
+                    } else{
+                        sendMessage("Successfully logged in", server.getIdentity());
+                        return;
+                    }
+                } else{
+                    sendMessage("Incorrect username/password combination", server.getIdentity());
                 }
-                user = null;
-                sendMessage("Incorrect username/password combination", server.getIdentity());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
