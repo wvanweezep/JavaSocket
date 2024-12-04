@@ -25,6 +25,7 @@ public class Server {
      */
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        users.save(identity);
         log("Server started: (port = " + port +
                 ", ip = " + InetAddress.getLocalHost().getHostAddress()
                 + ")");

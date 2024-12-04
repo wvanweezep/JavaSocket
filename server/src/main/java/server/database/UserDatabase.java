@@ -2,9 +2,7 @@ package server.database;
 
 import commons.databases.PersistentDatabase;
 import commons.entities.User;
-import server.ClientHandler;
 
-import java.util.List;
 import java.util.Optional;
 
 public class UserDatabase extends PersistentDatabase<User> {

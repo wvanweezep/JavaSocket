@@ -42,11 +42,18 @@ public class Client {
 
             try {
                 Message<String> obj = (Message<String>) in.readObject();
-                if (obj.getObject().isPresent()) {
-                    validated = obj.getObject().get().equals(
-                            "Successfully logged in");
-                    System.out.println("[" + obj.getSender().getUsername() + "] "
-                            + (obj.getObject().isPresent() ? obj.getObject().get() : null) + "\n");
+                boolean found = false;
+                while (!found){
+                    if (obj.getSender().getUsername().equals("Server")) {
+                        if (obj.getObject().isPresent()) {
+                            validated = obj.getObject().get().equals(
+                                    "Successfully logged in");
+                            System.out.println("[" + obj.getSender().getUsername() + "] "
+                                    + (obj.getObject().isPresent() ? obj.getObject().get() : null)
+                                    + "\n");
+                            found = true;
+                        }
+                    } else obj = (Message<String>) in.readObject();
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

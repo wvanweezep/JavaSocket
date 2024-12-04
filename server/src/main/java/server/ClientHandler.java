@@ -42,7 +42,6 @@ public class ClientHandler implements Runnable {
                 Message<User> obj = (Message<User>) in.readObject();
                 user = obj.getObject().orElse(null);
                 if (server.getUsersDatabase().authenticateUser(user)) {
-                    log(server.getClients());
                     if (server.getClients().stream() //
                             .filter(c -> !c.equals(this))
                             .map(ClientHandler::getUser) //
