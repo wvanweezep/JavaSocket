@@ -1,5 +1,7 @@
 package commons;
 
+import commons.entities.User;
+
 import java.io.*;
 import java.util.Optional;
 

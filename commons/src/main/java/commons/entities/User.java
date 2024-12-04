@@ -1,4 +1,4 @@
-package commons;
+package commons.entities;
 
 import java.io.Serial;
 import java.io.Serializable;

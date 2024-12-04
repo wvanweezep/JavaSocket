@@ -1,7 +1,7 @@
 package client;
 
 import commons.Message;
-import commons.User;
+import commons.entities.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -10,7 +10,7 @@ public class Client {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private User user = new User("wessel", "OSUSUCKS");
+    private User user = new User("marjooy", "OSUSUCKS");
 
     public void start(String host, int port) throws IOException {
         socket = new Socket(host, port);

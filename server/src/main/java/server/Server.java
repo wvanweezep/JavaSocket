@@ -1,6 +1,5 @@
 package server;
 
-import commons.User;
 import server.database.UserDatabase;
 
 import java.io.IOException;
@@ -27,10 +26,7 @@ public class Server {
         log("Server started: (port = " + port +
                 ", ip = " + InetAddress.getLocalHost().getHostAddress()
                 + ")");
-
-        while (true) {
-            connectClient(serverSocket.accept());
-        }
+        while (true) { connectClient(serverSocket.accept()); }
     }
 
     /**
@@ -45,16 +41,17 @@ public class Server {
     /**
      * Broadcasts a message to all clients.
      *
-     * @param msg The content of the message
+     * @param obj The content of the message
+     * @param sender The {@code ClientHandler} accompanied to the sender
      */
-    public <T> void broadcastToAll(T obj) {
+    public <T> void broadcastToAll(T obj, ClientHandler sender) {
         clients.forEach(client -> client.sendMessage(obj, sender));
     }
 
     /**
      * Broadcasts a message to all clients, except the sender.
      *
-     * @param msg The content of the message
+     * @param obj The content of the message
      * @param sender The {@code ClientHandler} accompanied to the sender
      */
     public <T> void broadcast(T obj, ClientHandler sender) {
@@ -64,7 +61,7 @@ public class Server {
     /**
      * Broadcasts a message to a selected group of clients, excluding the sender.
      *
-     * @param msg The content of the message
+     * @param obj The content of the message
      * @param sender The {@code ClientHandler} accompanied to the sender
      * @param receivers The {@code ClientHandler} of the receivers
      */
