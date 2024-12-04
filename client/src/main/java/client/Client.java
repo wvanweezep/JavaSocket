@@ -10,7 +10,7 @@ public class Client {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private User user = new User("marjooy", "OSUSUCKS");
+    private User user;
 
     public void start(String host, int port) throws IOException {
         socket = new Socket(host, port);
@@ -18,14 +18,39 @@ public class Client {
         out = new ObjectOutputStream(socket.getOutputStream());
         in =  new ObjectInputStream(socket.getInputStream());
 
+        login();
         new Thread(this::listenForMessages).start();
-
-        sendMessage(user);
 
         BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         String msg;
         while ((msg = userInput.readLine()) != null) {
             sendMessage(msg);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void login() throws IOException {
+        BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+        boolean validated = false;
+        while (!validated) {
+            System.out.println("Enter username: ");
+            String username = userInput.readLine();
+            System.out.println("Enter password: ");
+            String password = userInput.readLine();
+            user = new User(username, password);
+            sendMessage(user);
+
+            try {
+                Message<String> obj = (Message<String>) in.readObject();
+                if (obj.getObject().isPresent()) {
+                    validated = !obj.getObject().get().equals(
+                            "Incorrect username/password combination");
+                    System.out.println("[" + obj.getSender().getUsername() + "] "
+                            + (obj.getObject().isPresent() ? obj.getObject().get() : null) + "\n");
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -51,6 +76,6 @@ public class Client {
     }
 
     private <S> void log(S msg) {
-        System.out.println("[" + user.getUsername() + "] " + msg.toString());
+        System.out.println("[" + (user != null ? user.getUsername() : "client") + "] " + msg.toString());
     }
 }

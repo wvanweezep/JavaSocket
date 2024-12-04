@@ -1,5 +1,6 @@
 package server;
 
+import commons.entities.User;
 import server.database.UserDatabase;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ public class Server {
     private ServerSocket serverSocket;
     private final List<ClientHandler> clients = new ArrayList<>();
     private final UserDatabase users = new UserDatabase();
+    private final User identity = new User("Server", "d93hslFs");
 
     /**
      * Starting protocol of the {@code Server}, opening up for any clients to connect.
@@ -30,6 +32,14 @@ public class Server {
     }
 
     /**
+     * Getter for the server identity
+     * @return the {@code User} identity of the {@code Server}
+     */
+    public User getIdentity() {
+        return identity;
+    }
+
+    /**
      * Getter for the user database
      *
      * @return the user database
@@ -43,9 +53,10 @@ public class Server {
      *
      * @param obj The content of the message
      * @param sender The {@code ClientHandler} accompanied to the sender
+     * @param <T> The type for the message, any object is allowed
      */
     public <T> void broadcastToAll(T obj, ClientHandler sender) {
-        clients.forEach(client -> client.sendMessage(obj, sender));
+        clients.forEach(client -> client.sendMessage(obj, sender.getUser()));
     }
 
     /**
@@ -53,9 +64,10 @@ public class Server {
      *
      * @param obj The content of the message
      * @param sender The {@code ClientHandler} accompanied to the sender
+     * @param <T> The type for the message, any object is allowed
      */
     public <T> void broadcast(T obj, ClientHandler sender) {
-        clients.forEach(client -> { if (!client.equals(sender)) client.sendMessage(obj, sender); });
+        clients.forEach(client -> { if (!client.equals(sender)) client.sendMessage(obj, sender.getUser()); });
     }
 
     /**
@@ -64,11 +76,12 @@ public class Server {
      * @param obj The content of the message
      * @param sender The {@code ClientHandler} accompanied to the sender
      * @param receivers The {@code ClientHandler} of the receivers
+     * @param <T> The type for the message, any object is allowed
      */
     public <T> void broadcast(T obj, ClientHandler sender, List<ClientHandler> receivers) {
         clients.stream()
                 .filter(client -> !client.equals(sender) && receivers.contains(client))
-                .forEach(client -> client.sendMessage(obj, sender));
+                .forEach(client -> client.sendMessage(obj, sender.getUser()));
     }
 
     /**

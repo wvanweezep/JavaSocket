@@ -41,8 +41,12 @@ public class ClientHandler implements Runnable {
             try{
                 Message<User> obj = (Message<User>) in.readObject();
                 user = obj.getObject().orElse(null);
-                server.getUsersDatabase().save(user);
-                break;
+                if (server.getUsersDatabase().authenticateUser(user)) {
+                    sendMessage("Successfully logged in", server.getIdentity());
+                    return;
+                }
+                user = null;
+                sendMessage("Incorrect username/password combination", server.getIdentity());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -53,9 +57,9 @@ public class ClientHandler implements Runnable {
         return user;
     }
 
-    public <T> void sendMessage(T obj, ClientHandler sender) {
+    public <T> void sendMessage(T obj, User sender) {
         try {
-            out.writeObject(new Message<T>(sender.getUser(), obj));
+            out.writeObject(new Message<T>(sender, obj));
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
