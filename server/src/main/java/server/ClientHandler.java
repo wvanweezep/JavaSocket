@@ -1,11 +1,9 @@
 package server;
 
+import commons.Message;
 import commons.User;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
@@ -13,8 +11,8 @@ public class ClientHandler implements Runnable {
     private final Socket socket;
     private final Server server;
 
-    private PrintWriter out;
-    private BufferedReader in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     private User user;
 
@@ -26,8 +24,8 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
             userSetUp();
             receiveMessage();
         } catch (IOException e) {
@@ -46,20 +44,29 @@ public class ClientHandler implements Runnable {
             else if (password == null) {
                 password = msg;
                 user = new User(username, password);
-                sendMessage("Successfully created account");
+                sendObject(new Message<User>(user));
                 break;
             }
         }
     }
 
-    public void sendMessage(String msg) {
-        out.println(msg);
+    public <T> void sendObject(Message<T> obj) {
+        try {
+            out.writeObject(obj);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void receiveMessage() throws IOException {
-        String msg;
-        while ((msg = in.readLine()) != null) {
-            server.broadcast(log(msg), this);
+        while (in.available() != 0) {
+            try{
+                Object obj = (Object) in.readObject();
+                System.out.println("Received object: " + obj);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 

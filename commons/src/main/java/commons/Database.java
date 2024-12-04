@@ -45,7 +45,7 @@ public abstract class Database<T extends Entity> {
     }
 
     public List<T> save(T obj) {
-        if (!data.stream().anyMatch(entity -> entity.equals(obj))) data.add(obj);
+        if (data.stream().noneMatch(entity -> entity.equals(obj))) data.add(obj);
         else data.stream()
                 .filter(entity -> entity.equals(obj))
                 .forEach(entity -> { data.set(data.indexOf(entity), obj); });
@@ -56,6 +56,15 @@ public abstract class Database<T extends Entity> {
     public T remove(T obj) {
         data.removeIf(entity -> entity.equals(obj));
         return obj;
+    }
+
+    public T removeById(long id) {
+        Optional<T> obj =  data.stream().filter(entity -> entity.getId() == id).findFirst();
+        if (obj.isPresent()) {
+            data.removeIf(entity -> entity.getId() == id);
+            return obj.get();
+        }
+        return null;
     }
 
     public void clear(){

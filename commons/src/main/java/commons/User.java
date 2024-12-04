@@ -19,7 +19,6 @@ public class User extends Entity implements Serializable {
         this.password = password;
     }
 
-    // Getters and setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
