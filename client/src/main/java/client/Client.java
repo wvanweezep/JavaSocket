@@ -1,23 +1,25 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import commons.Message;
+import commons.User;
+
+import java.io.*;
 import java.net.Socket;
 
 public class Client {
     private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     public void start(String host, int port) throws IOException {
         socket = new Socket(host, port);
         log("Connected to the server");
-        out = new PrintWriter(socket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new ObjectOutputStream(socket.getOutputStream());
+        in =  new ObjectInputStream(socket.getInputStream());
 
         new Thread(this::listenForMessages).start();
+
+        sendMessage(new User("usernameTest", "passwordTest"));
 
         BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         String msg;
@@ -27,18 +29,23 @@ public class Client {
     }
 
     private void listenForMessages() {
-        String msg;
-        try {
-            while ((msg = in.readLine()) != null) {
-                System.out.println("Server: " + msg);
+        while (true) {
+            try {
+                Message<?> obj = (Message<?>) in.readObject();
+                System.out.println("Received object: " + (obj.getObject().isPresent() ? obj.getObject().get() : null));
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            System.err.println("Error reading from server: " + e.getMessage());
         }
     }
 
-    private void sendMessage(String message) {
-        out.println(message);
+    public <T> void sendMessage(T obj) {
+        try {
+            out.writeObject(new Message<T>(obj));
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static <S> void log(S msg) {

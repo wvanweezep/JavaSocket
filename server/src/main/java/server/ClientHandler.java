@@ -35,24 +35,23 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void userSetUp() throws IOException {
-        String msg;
-        String username = null;
-        String password = null;
-        while ((msg = in.readLine()) != null) {
-            if (username == null) { username = msg; }
-            else if (password == null) {
-                password = msg;
-                user = new User(username, password);
-                sendObject(new Message<User>(user));
+        while (true) {
+            try{
+                Message<User> obj = (Message<User>) in.readObject();
+                user = obj.getObject().orElse(null);
+                sendMessage("Received user");
                 break;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
 
-    public <T> void sendObject(Message<T> obj) {
+    public <T> void sendMessage(T obj) {
         try {
-            out.writeObject(obj);
+            out.writeObject(new Message<T>(obj));
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,10 +59,10 @@ public class ClientHandler implements Runnable {
     }
 
     private void receiveMessage() throws IOException {
-        while (in.available() != 0) {
+        while (true) {
             try{
-                Object obj = (Object) in.readObject();
-                System.out.println("Received object: " + obj);
+                Message<?> obj = (Message<?>) in.readObject();
+                System.out.println("Received object: " + (obj.getObject().isPresent() ? obj.getObject().get() : null));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
