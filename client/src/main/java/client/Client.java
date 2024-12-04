@@ -10,6 +10,7 @@ public class Client {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private User user = new User("wessel", "OSUSUCKS");
 
     public void start(String host, int port) throws IOException {
         socket = new Socket(host, port);
@@ -19,7 +20,7 @@ public class Client {
 
         new Thread(this::listenForMessages).start();
 
-        sendMessage(new User("usernameTest", "passwordTest"));
+        sendMessage(user);
 
         BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         String msg;
@@ -32,7 +33,8 @@ public class Client {
         while (true) {
             try {
                 Message<?> obj = (Message<?>) in.readObject();
-                System.out.println("Received object: " + (obj.getObject().isPresent() ? obj.getObject().get() : null));
+                System.out.println("[" + obj.getSender().getUsername() + "] "
+                        + (obj.getObject().isPresent() ? obj.getObject().get() : null));
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -41,14 +43,14 @@ public class Client {
 
     public <T> void sendMessage(T obj) {
         try {
-            out.writeObject(new Message<T>(obj));
+            out.writeObject(new Message<T>(user, obj));
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static <S> void log(S msg) {
-        System.out.println("[Client] " + msg.toString());
+    private <S> void log(S msg) {
+        System.out.println("[" + user.getUsername() + "] " + msg.toString());
     }
 }

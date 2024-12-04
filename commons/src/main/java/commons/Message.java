@@ -7,10 +7,16 @@ public class Message<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final User sender;
     private final byte[] serializedData;
 
-    public Message(T obj) {
+    public Message(User sender, T obj) {
+        this.sender = sender;
         this.serializedData = serializeObject(obj);
+    }
+
+    public User getSender() {
+        return sender;
     }
 
     public Optional<T> getObject() {

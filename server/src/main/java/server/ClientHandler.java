@@ -29,7 +29,7 @@ public class ClientHandler implements Runnable {
             userSetUp();
             receiveMessage();
         } catch (IOException e) {
-            System.err.println("Connection error: " + e.getMessage());
+            log("Disconnected");
         } finally {
             close();
         }
@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
             try{
                 Message<User> obj = (Message<User>) in.readObject();
                 user = obj.getObject().orElse(null);
-                sendMessage("Received user");
+                server.getUsersDatabase().save(user);
                 break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -49,9 +49,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public <T> void sendMessage(T obj) {
+    public User getUser() {
+        return user;
+    }
+
+    public <T> void sendMessage(T obj, ClientHandler sender) {
         try {
-            out.writeObject(new Message<T>(obj));
+            out.writeObject(new Message<T>(sender.getUser(), obj));
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,7 +66,9 @@ public class ClientHandler implements Runnable {
         while (true) {
             try{
                 Message<?> obj = (Message<?>) in.readObject();
-                System.out.println("Received object: " + (obj.getObject().isPresent() ? obj.getObject().get() : null));
+                System.out.println("[" + obj.getSender().getUsername() + "] "
+                        + (obj.getObject().isPresent() ? obj.getObject().get() : null));
+                server.broadcast(obj.getObject().get(), this);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

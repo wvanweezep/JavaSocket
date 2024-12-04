@@ -1,5 +1,6 @@
 package server;
 
+import commons.User;
 import server.database.UserDatabase;
 
 import java.io.IOException;
@@ -33,12 +34,21 @@ public class Server {
     }
 
     /**
+     * Getter for the user database
+     *
+     * @return the user database
+     */
+    public UserDatabase getUsersDatabase() {
+        return users;
+    }
+
+    /**
      * Broadcasts a message to all clients.
      *
      * @param msg The content of the message
      */
-    public void broadcastToAll(String msg) {
-        clients.forEach(client -> client.sendMessage(msg));
+    public <T> void broadcastToAll(T obj) {
+        clients.forEach(client -> client.sendMessage(obj, sender));
     }
 
     /**
@@ -47,8 +57,8 @@ public class Server {
      * @param msg The content of the message
      * @param sender The {@code ClientHandler} accompanied to the sender
      */
-    public void broadcast(String msg, ClientHandler sender) {
-        clients.forEach(client -> { if (!client.equals(sender)) client.sendMessage(msg); });
+    public <T> void broadcast(T obj, ClientHandler sender) {
+        clients.forEach(client -> { if (!client.equals(sender)) client.sendMessage(obj, sender); });
     }
 
     /**
@@ -58,10 +68,10 @@ public class Server {
      * @param sender The {@code ClientHandler} accompanied to the sender
      * @param receivers The {@code ClientHandler} of the receivers
      */
-    public void broadcast(String msg, ClientHandler sender, List<ClientHandler> receivers) {
+    public <T> void broadcast(T obj, ClientHandler sender, List<ClientHandler> receivers) {
         clients.stream()
                 .filter(client -> !client.equals(sender) && receivers.contains(client))
-                .forEach(client -> client.sendMessage(msg));
+                .forEach(client -> client.sendMessage(obj, sender));
     }
 
     /**
