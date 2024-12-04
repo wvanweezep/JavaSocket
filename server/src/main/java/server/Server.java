@@ -94,12 +94,12 @@ public class Server {
     }
 
     /**
-     * Documents an event in the terminal
+     * Documents an event in the terminal.
      *
      * @param msg The message that describes the event
-     * @param <S> The type for the message, any object is allowed
+     * @param <T> The type for the message, any object is allowed
      */
-    private static <S> void log(S msg) {
+    private static <T> void log(T msg) {
         System.out.println("[Server] " + msg.toString());
     }
 }
