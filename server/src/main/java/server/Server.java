@@ -3,11 +3,13 @@ package server;
 import commons.Debugger;
 import commons.entities.User;
 import server.database.UserDatabase;
+import server.utils.ServerUtils;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +19,8 @@ public class Server {
     private final List<ClientHandler> clients = new ArrayList<>();
     private final User identity = new User("Server", "d93hslFs");
     private final Debugger debugger = new Debugger();
+    private final ServerUtils utils = new ServerUtils(this);
     private UserDatabase users;
-
-    private int port;
-    private String ip;
 
     /**
      * Starting protocol of the {@code Server}, opening up for any clients to connect.
@@ -32,28 +32,32 @@ public class Server {
         serverSocket = new ServerSocket(port);
         users = new UserDatabase(debugger);
         users.save(identity);
-        this.port = port;
-        this.ip = InetAddress.getLocalHost().getHostAddress();
-        log("Server started: (port = " + this.port +
-                ", ip = " + this.ip + ")");
+        log("Server started: (port = " + serverSocket.getLocalPort() +
+                ", ip = " + InetAddress.getLocalHost().getHostAddress() + ")");
         while (true) { connectClient(serverSocket.accept()); }
     }
 
+    //Getters and Setters
     public Integer getPort() {
-        return port;
+        return serverSocket.getLocalPort();
     }
+
     public String getIp() {
-        return ip;
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            return null;
+        }
     }
 
     public Debugger getDebugger() {
         return debugger;
     }
 
-    /**
-     * Getter for the server identity
-     * @return the {@code User} identity of the {@code Server}
-     */
+    public ServerUtils getUtils() {
+        return utils;
+    }
+
     public User getIdentity() {
         return identity;
     }
@@ -62,61 +66,19 @@ public class Server {
         return clients;
     }
 
-    /**
-     * Getter for the user database
-     *
-     * @return the user database
-     */
     public UserDatabase getUsersDatabase() {
         return users;
     }
 
-    /**
-     * Broadcasts a message to all clients.
-     *
-     * @param obj The content of the message
-     * @param sender The {@code ClientHandler} accompanied to the sender
-     * @param <T> The type for the message, any object is allowed
-     */
-    public <T> void broadcastToAll(T obj, ClientHandler sender) {
-        clients.forEach(client -> client.sendMessage(obj, sender.getUser()));
-    }
-
-    /**
-     * Broadcasts a message to all clients, except the sender.
-     *
-     * @param obj The content of the message
-     * @param sender The {@code ClientHandler} accompanied to the sender
-     * @param <T> The type for the message, any object is allowed
-     */
-    public <T> void broadcast(T obj, ClientHandler sender) {
-        clients.forEach(client -> { if (!client.equals(sender)) client.sendMessage(obj, sender.getUser()); });
-    }
-
-    /**
-     * Broadcasts a message to a selected group of clients, excluding the sender.
-     *
-     * @param obj The content of the message
-     * @param sender The {@code ClientHandler} accompanied to the sender
-     * @param receivers The {@code ClientHandler} of the receivers
-     * @param <T> The type for the message, any object is allowed
-     */
-    public <T> void broadcast(T obj, ClientHandler sender, List<ClientHandler> receivers) {
-        clients.stream()
-                .filter(client -> !client.equals(sender) && receivers.contains(client))
-                .forEach(client -> client.sendMessage(obj, sender.getUser()));
-    }
 
     /**
      * Attempts to remove a {@code ClientHandler} from the list of clients.
      *
-     * @param clientHandler The targeted {@code ClientHandler} to be removed
-     * @return {@code true} if the {@code ClientHandler} was successfully removed
+     * @param client The targeted {@code ClientHandler} to be removed
      */
-    public boolean removeClient(ClientHandler clientHandler) {
-        boolean status = clients.remove(clientHandler);
-        clientHandler.close();
-        return status;
+    public void disconnectClient(ClientHandler client) {
+        clients.remove(client);
+        client.disconnect();
     }
 
     /**
@@ -132,13 +94,13 @@ public class Server {
     }
 
     /**
-     * Documents an event in the terminal.
+     * Documents an event in the {@code Debugger}.
      *
      * @param msg The message that describes the event
      * @param <T> The type for the message, any object is allowed
      */
-    private <T> void log(T msg) {
-        System.out.println("[Server] " + msg.toString());
-        debugger.log("[Server] " + msg.toString());
+    public <T> void log(T msg) {
+        System.out.println("[Server] " + msg);
+        debugger.log("[Server] " + msg);
     }
 }

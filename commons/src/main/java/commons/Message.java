@@ -3,6 +3,7 @@ package commons;
 import commons.entities.User;
 
 import java.io.*;
+import java.time.Instant;
 import java.util.Optional;
 
 public class Message<T> implements Serializable {
@@ -11,14 +12,20 @@ public class Message<T> implements Serializable {
 
     private final User sender;
     private final byte[] serializedData;
+    private final Instant timestamp;
 
     public Message(User sender, T obj) {
         this.sender = sender;
         this.serializedData = serializeObject(obj);
+        timestamp = Instant.now();
     }
 
     public User getSender() {
         return sender;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
     }
 
     public Optional<T> getObject() {

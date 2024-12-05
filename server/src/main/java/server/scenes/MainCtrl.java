@@ -16,6 +16,14 @@ public class MainCtrl {
 
     public MainCtrl() {}
 
+    /**
+     * Setup and start of JavaFX application and {@code Server}.
+     *
+     * @param primaryStage The {@code Stage} of the running application
+     * @param overview The {@code Scene} of the {@code OverviewCtrl}
+     * @param overviewCtrl The instantiated {@code OverviewCtrl}
+     * @throws IOException Thrown on an input/output error
+     */
     public void initialize(Stage primaryStage, Scene overview, OverviewCtrl overviewCtrl) throws IOException {
         this.primaryStage = primaryStage;
         this.overview = overview;
@@ -26,6 +34,15 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    //Getters and Setters
+    public Server getServer() {
+        return this.server;
+    }
+
+
+    /**
+     * Starting protocol of the {@code Server}.
+     */
     private void initServer() {
         this.server = new Server();
         Thread serverThread = new Thread(() -> {
@@ -39,10 +56,9 @@ public class MainCtrl {
         serverThread.start();
     }
 
-    public Server getServer() {
-        return this.server;
-    }
-
+    /**
+     * Activate the Overview scene
+     */
     public void showOverview() {
         primaryStage.setTitle("Server Overview");
         primaryStage.setScene(overview);

@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.ContextMenu?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="596.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ListView fx:id="clientList" layoutX="12.0" layoutY="35.0" prefHeight="317.0" prefWidth="306.0">
+      <ListView fx:id="clientList" layoutX="12.0" layoutY="35.0" prefHeight="544.0" prefWidth="306.0">
          <contextMenu>
             <ContextMenu>
               <items>
@@ -42,19 +35,7 @@
             <Font name="Arial Italic" size="8.0" />
          </font>
       </Label>
-      <LineChart fx:id="latencyChart" layoutX="-3.0" layoutY="354.0" prefHeight="252.0" prefWidth="637.0">
-        <xAxis>
-          <CategoryAxis side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis side="LEFT">
-               <tickLabelFont>
-                  <Font size="5.0" />
-               </tickLabelFont>
-            </NumberAxis>
-        </yAxis>
-      </LineChart>
-      <ListView fx:id="roomList" layoutX="327.0" layoutY="35.0" prefHeight="317.0" prefWidth="306.0" />
+      <ListView fx:id="roomList" layoutX="327.0" layoutY="35.0" prefHeight="544.0" prefWidth="306.0" />
       <Label layoutX="327.0" layoutY="13.0" prefHeight="17.0" prefWidth="162.0" text="Open Rooms">
          <font>
             <Font name="Arial" size="12.0" />
