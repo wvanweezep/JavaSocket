@@ -5,6 +5,8 @@ import commons.entities.User;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Client {
     private Socket socket;
@@ -20,6 +22,12 @@ public class Client {
 
         login();
         new Thread(this::listenForMessages).start();
+
+        TimerTask saveTask = new TimerTask() {
+            @Override
+            public void run() { serverPing(); }
+        };
+       //new Timer().scheduleAtFixedRate(saveTask, 0, 100);
 
         BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         String msg;
@@ -57,8 +65,13 @@ public class Client {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                exit();
             }
         }
+    }
+
+    private void serverPing() {
+        sendMessage("");
     }
 
     private void listenForMessages() {
@@ -69,6 +82,7 @@ public class Client {
                         + (obj.getObject().isPresent() ? obj.getObject().get() : null));
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                exit();
             }
         }
     }
@@ -79,7 +93,18 @@ public class Client {
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
+            exit();
         }
+    }
+
+    private void exit() {
+        log("Disconnecting from server");
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.exit(0);
     }
 
     private <S> void log(S msg) {

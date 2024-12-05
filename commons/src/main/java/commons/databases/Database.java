@@ -1,5 +1,6 @@
 package commons.databases;
 
+import commons.Debugger;
 import commons.entities.Entity;
 
 import java.util.ArrayList;
@@ -17,19 +18,27 @@ public abstract class Database<T extends Entity> {
      * An {@code ArrayList} containing all saved entities.
      */
     private final List<T> data;
+    /**
+     * The {@code Debugger} to document events
+     */
+    private final Debugger debugger;
 
     /**
      * Constructor initializing the data array.
+     * @param debugger The {@code Debugger} to document events
      */
-    public Database() {
+    public Database(Debugger debugger) {
         this.data = load("");
+        this.debugger = debugger;
     }
 
     /**
      * Constructor initializing the data array on a certain path.
+     * @param debugger The {@code Debugger} to document events
      * @param path The path of the database file
      */
-    public Database(String path) {
+    public Database(Debugger debugger, String path) {
+        this.debugger = debugger;
         this.data = load(path);
     }
 
@@ -124,7 +133,8 @@ public abstract class Database<T extends Entity> {
      * @param <T> The type for the message, any object is allowed
      */
     protected <T> T log(T msg){
-        System.out.println("[" + getClass().getSimpleName() + "] " + msg.toString());
+        System.out.println("[" + getClass().getSimpleName() + "] " + msg);
+        debugger.log("[" + getClass().getSimpleName() + "] " + msg);
         return msg;
     }
 }

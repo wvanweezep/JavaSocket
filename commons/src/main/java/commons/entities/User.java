@@ -30,7 +30,7 @@ public class User extends Entity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(getId(), user.getId());
+        return Objects.equals(username, user.username) && Objects.equals(password, user.password);
     }
 
     @Override

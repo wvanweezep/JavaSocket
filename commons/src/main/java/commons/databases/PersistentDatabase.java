@@ -1,5 +1,6 @@
 package commons.databases;
 
+import commons.Debugger;
 import commons.entities.Entity;
 
 import java.io.File;
@@ -28,10 +29,11 @@ public abstract class PersistentDatabase<T extends Entity> extends Database<T>{
     /**
      * Constructor loading the data from the .ser database file.
      *
+     * @param debugger The {@code Debugger} to document events
      * @param filePath The file path of the database .ser file
      */
-    public PersistentDatabase(String filePath) {
-        super(filePath);
+    public PersistentDatabase(Debugger debugger, String filePath) {
+        super(debugger, filePath);
         this.filePath = filePath;
     }
 
