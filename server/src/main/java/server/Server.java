@@ -17,6 +17,9 @@ public class Server {
     private final UserDatabase users = new UserDatabase();
     private final User identity = new User("Server", "d93hslFs");
 
+    private int port;
+    private String ip;
+
     /**
      * Starting protocol of the {@code Server}, opening up for any clients to connect.
      *
@@ -26,10 +29,18 @@ public class Server {
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         users.save(identity);
-        log("Server started: (port = " + port +
-                ", ip = " + InetAddress.getLocalHost().getHostAddress()
-                + ")");
+        this.port = port;
+        this.ip = InetAddress.getLocalHost().getHostAddress();
+        log("Server started: (port = " + this.port +
+                ", ip = " + this.ip + ")");
         while (true) { connectClient(serverSocket.accept()); }
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+    public String getIp() {
+        return ip;
     }
 
     /**

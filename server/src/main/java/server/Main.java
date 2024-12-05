@@ -20,7 +20,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/overview.fxml"));
-        loader.setController(new OverviewCtrl(mainCtrl));
-        mainCtrl.initialize(stage, new Scene(loader.load()));
+        OverviewCtrl overviewCtrl = new OverviewCtrl(mainCtrl);
+        loader.setController(overviewCtrl);
+        mainCtrl.initialize(stage, new Scene(loader.load()), overviewCtrl);
     }
 }

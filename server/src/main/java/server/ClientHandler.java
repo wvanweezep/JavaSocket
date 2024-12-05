@@ -99,4 +99,10 @@ public class ClientHandler implements Runnable {
         System.out.println("[" + user.getUsername() + "] " + msg.toString());
         return msg;
     }
+
+    @Override
+    public String toString() {
+        if (user == null) return "[Unregistered User]";
+        return user.getUsername();
+    }
 }

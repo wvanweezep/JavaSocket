@@ -10,13 +10,16 @@ public class MainCtrl {
 
     private Server server;
     private Stage primaryStage;
+
     private Scene overview;
+    private OverviewCtrl overviewCtrl;
 
     public MainCtrl() {}
 
-    public void initialize(Stage primaryStage, Scene overview) throws IOException {
+    public void initialize(Stage primaryStage, Scene overview, OverviewCtrl overviewCtrl) throws IOException {
         this.primaryStage = primaryStage;
         this.overview = overview;
+        this.overviewCtrl = overviewCtrl;
 
         initServer();
         showOverview();
@@ -24,7 +27,7 @@ public class MainCtrl {
     }
 
     private void initServer() {
-        server = new Server();
+        this.server = new Server();
         Thread serverThread = new Thread(() -> {
             try {
                 server.start(8080);
@@ -37,7 +40,7 @@ public class MainCtrl {
     }
 
     public Server getServer() {
-        return server;
+        return this.server;
     }
 
     public void showOverview() {
