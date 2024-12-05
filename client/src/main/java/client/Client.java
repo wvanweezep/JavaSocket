@@ -57,6 +57,7 @@ public class Client {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                exit();
             }
         }
     }
@@ -69,6 +70,7 @@ public class Client {
                         + (obj.getObject().isPresent() ? obj.getObject().get() : null));
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+                exit();
             }
         }
     }
@@ -79,7 +81,18 @@ public class Client {
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
+            exit();
         }
+    }
+
+    private void exit() {
+        log("Disconnecting from server");
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.exit(0);
     }
 
     private <S> void log(S msg) {

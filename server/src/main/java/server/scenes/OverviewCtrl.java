@@ -5,9 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import server.ClientHandler;
-import server.Server;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,6 +49,13 @@ public class OverviewCtrl {
     private void updateOverview() {
         if (mainCtrl.getServer() == null) return;
         initServerInfo();
-        clientList.getItems().setAll(mainCtrl.getServer().getClients());
+        if (!clientList.getItems().equals(mainCtrl.getServer().getClients()))
+            clientList.getItems().setAll(mainCtrl.getServer().getClients());
+    }
+
+    public void kickClient() {
+        if (clientList.getSelectionModel().getSelectedItem() == null) return;
+        mainCtrl.getServer().removeClient(
+                clientList.getSelectionModel().getSelectedItem());
     }
 }

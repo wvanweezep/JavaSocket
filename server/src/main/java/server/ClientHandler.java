@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable {
                     }
                 } else{
                     sendMessage("Incorrect username/password combination", server.getIdentity());
-                }
+                } user = null;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -86,10 +86,9 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void close() {
+    protected void close() {
         try {
             socket.close();
-            if (!server.removeClient(this)) throw new IOException("Client not found");
         } catch(IOException e) {
             System.err.println("Error closing client connection: " + e.getMessage());
         }
@@ -103,6 +102,6 @@ public class ClientHandler implements Runnable {
     @Override
     public String toString() {
         if (user == null) return "[Unregistered User]";
-        return user.getUsername();
+        return user.getUsername() + " (" + socket.getInetAddress() + ")";
     }
 }

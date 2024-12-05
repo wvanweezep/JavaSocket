@@ -107,7 +107,9 @@ public class Server {
      * @return {@code true} if the {@code ClientHandler} was successfully removed
      */
     public boolean removeClient(ClientHandler clientHandler) {
-        return clients.remove(clientHandler);
+        boolean status = clients.remove(clientHandler);
+        clientHandler.close();
+        return status;
     }
 
     /**
