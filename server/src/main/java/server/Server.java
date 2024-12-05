@@ -1,5 +1,6 @@
 package server;
 
+import commons.Debugger;
 import commons.entities.User;
 import server.database.UserDatabase;
 
@@ -14,8 +15,9 @@ public class Server {
 
     private ServerSocket serverSocket;
     private final List<ClientHandler> clients = new ArrayList<>();
-    private final UserDatabase users = new UserDatabase();
     private final User identity = new User("Server", "d93hslFs");
+    private final Debugger debugger = new Debugger();
+    private UserDatabase users;
 
     private int port;
     private String ip;
@@ -28,6 +30,7 @@ public class Server {
      */
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        users = new UserDatabase(debugger);
         users.save(identity);
         this.port = port;
         this.ip = InetAddress.getLocalHost().getHostAddress();
@@ -41,6 +44,10 @@ public class Server {
     }
     public String getIp() {
         return ip;
+    }
+
+    public Debugger getDebugger() {
+        return debugger;
     }
 
     /**
@@ -130,7 +137,8 @@ public class Server {
      * @param msg The message that describes the event
      * @param <T> The type for the message, any object is allowed
      */
-    private static <T> void log(T msg) {
+    private <T> void log(T msg) {
         System.out.println("[Server] " + msg.toString());
+        debugger.log("[Server] " + msg.toString());
     }
 }

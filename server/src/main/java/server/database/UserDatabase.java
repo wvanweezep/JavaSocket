@@ -1,5 +1,6 @@
 package server.database;
 
+import commons.Debugger;
 import commons.databases.PersistentDatabase;
 import commons.entities.User;
 
@@ -7,8 +8,8 @@ import java.util.Optional;
 
 public class UserDatabase extends PersistentDatabase<User> {
     private static final String PATH = "server/src/main/resources/databases/users.ser";
-    public UserDatabase() {
-        super(PATH);
+    public UserDatabase(Debugger debugger) {
+        super(debugger, PATH);
         log(getAll());
     }
 

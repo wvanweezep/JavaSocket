@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -25,7 +26,7 @@
             <Font name="Arial" size="12.0" />
          </font>
       </Label>
-      <ListView fx:id="serverLog" layoutX="644.0" layoutY="39.0" prefHeight="546.0" prefWidth="240.0" />
+      <ListView fx:id="serverLog" layoutX="644.0" layoutY="35.0" onMouseClicked="#collapseLog" prefHeight="390.0" prefWidth="240.0" />
       <Label layoutX="644.0" layoutY="19.0" text="Server Log">
          <font>
             <Font name="Arial" size="12.0" />
@@ -59,5 +60,10 @@
             <Font name="Arial" size="12.0" />
          </font>
       </Label>
+      <TextArea fx:id="serverLogField" editable="false" layoutX="644.0" layoutY="429.0" prefHeight="151.0" prefWidth="240.0" promptText="Click any Server Log..." wrapText="true">
+         <font>
+            <Font name="Arial" size="10.0" />
+         </font>
+      </TextArea>
    </children>
 </AnchorPane>

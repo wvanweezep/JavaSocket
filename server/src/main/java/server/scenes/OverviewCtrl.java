@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import server.ClientHandler;
 
 import java.util.Timer;
@@ -21,6 +22,8 @@ public class OverviewCtrl {
     private ListView<ClientHandler> clientList;
     @FXML
     private ListView<String> serverLog;
+    @FXML
+    private TextArea serverLogField;
 
 
     public OverviewCtrl(MainCtrl mainCtrl){
@@ -51,6 +54,14 @@ public class OverviewCtrl {
         initServerInfo();
         if (!clientList.getItems().equals(mainCtrl.getServer().getClients()))
             clientList.getItems().setAll(mainCtrl.getServer().getClients());
+        if (!serverLog.getItems().equals(mainCtrl.getServer().getDebugger().getLog()))
+            serverLog.getItems().setAll(mainCtrl.getServer().getDebugger().getLog());
+    }
+
+    public void collapseLog() {
+        if (serverLog.getSelectionModel().getSelectedItem() != null) {
+            serverLogField.setText(serverLog.getSelectionModel().getSelectedItem());
+        }
     }
 
     public void kickClient() {

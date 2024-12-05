@@ -95,7 +95,8 @@ public class ClientHandler implements Runnable {
     }
 
     private <S> S log(S msg) {
-        System.out.println("[" + user.getUsername() + "] " + msg.toString());
+        System.out.println("[" + user.getUsername() + "] " + msg);
+        server.getDebugger().log("[" + user.getUsername() + "] " + msg);
         return msg;
     }
 
