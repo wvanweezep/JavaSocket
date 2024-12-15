@@ -1,12 +1,11 @@
 package client;
 
+import client.scenes.ConnectionCtrl;
 import commons.Message;
 import commons.entities.User;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Client {
     private Socket socket;
@@ -14,20 +13,15 @@ public class Client {
     private ObjectInputStream in;
     private User user;
 
-    public void start(String host, int port) throws IOException {
+    public void start(String host, int port, ConnectionCtrl connectionCtrl) throws IOException {
         socket = new Socket(host, port);
         log("Connected to the server");
+        connectionCtrl.setStatus("Connected to the server");
         out = new ObjectOutputStream(socket.getOutputStream());
         in =  new ObjectInputStream(socket.getInputStream());
 
         login();
         new Thread(this::listenForMessages).start();
-
-        TimerTask saveTask = new TimerTask() {
-            @Override
-            public void run() { serverPing(); }
-        };
-       //new Timer().scheduleAtFixedRate(saveTask, 0, 100);
 
         BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         String msg;
@@ -70,8 +64,8 @@ public class Client {
         }
     }
 
-    private void serverPing() {
-        sendMessage("");
+    public Socket getSocket() {
+        return socket;
     }
 
     private void listenForMessages() {
